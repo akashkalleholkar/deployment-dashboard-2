@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Deployment Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<header>
+  <h1>Deployment Dashboard</h1>
+</header>
+
+<main class="container">
+
+  <!-- Filters -->
+  <section class="filters">
+    <form method="get" id="filterForm">
+      <label for="project">Project:</label>
+      <select name="project_id" id="project" onchange="document.getElementById('filterForm').submit();">
+        {% for p in projects %}
+          <option value="{{ p.id }}" {% if p.id == selected_project_id %}selected{% endif %}>{{ p.name }}</option>
+        {% endfor %}
+      </select>
+
+      <!-- Environment Tabs implemented as radio buttons -->
+      <div class="env-tabs">
+        {% for e in environments %}
+          <label class="tab">
+            <input type="radio" name="environment_id" value="{{ e.id }}" {% if e.id == selected_env_id %}checked{% endif %}
+                   onchange="document.getElementById('filterForm').submit();">
+            <span>{{ e.name|upper }}</span>
+          </label>
+        {% endfor %}
+      </div>
+    </form>
+  </section>
+
+<div class="stats-container">
+  <div class="stat-card">
+    <h3>This Week</h3>
+    <p class="stat-value">{{ week_total }}</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>This Month</h3>
+    <p class="stat-value">{{ month_total }}</p>
+  </div>
+
+  <div class="stat-card">
+    <h3>This Year</h3>
+    <p class="stat-value">{{ year_total }}</p>
+  </div>
+</div>
+
+
+  <!-- Day-wise Table -->
+  <section>
+    <h2>Day-wise Deployments (Last 30 days)</h2>
+    <table>
+      <thead>
+        <tr><th>Date</th><th>Count</th></tr>
+      </thead>
+      <tbody>
+        {% if day_rows %}
+          {% for r in day_rows %}
+            <tr>
+              <td>{{ r.d }}</td>
+              <td>{{ r.cnt }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="2" class="empty">No data</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Weekly Table -->
+  <section>
+    <h2>Weekly Deployments (Last 12 weeks)</h2>
+    <table>
+      <thead>
+        <tr><th>YearWeek</th><th>Count</th></tr>
+      </thead>
+      <tbody>
+        {% if week_rows %}
+          {% for r in week_rows %}
+            <tr>
+              <td>{{ r.yw }}</td>
+              <td>{{ r.cnt }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="2" class="empty">No data</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </section>
+
+  <!-- Monthly Table -->
+  <section>
+    <h2>Monthly Deployments (Last 12 months)</h2>
+    <table>
+      <thead>
+        <tr><th>Year-Month</th><th>Count</th></tr>
+      </thead>
+      <tbody>
+        {% if month_rows %}
+          {% for r in month_rows %}
+            <tr>
+              <td>{{ r.ym }}</td>
+              <td>{{ r.cnt }}</td>
+            </tr>
+          {% endfor %}
+        {% else %}
+          <tr><td colspan="2" class="empty">No data</td></tr>
+        {% endif %}
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<footer>
+  <small>&copy; {{ (caller or None) and "" }} Deployment Dashboard</small>
+</footer>
+
+</body>
+</html>

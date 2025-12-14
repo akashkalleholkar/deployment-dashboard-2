@@ -1,0 +1,29 @@
+
+version: "3.9"
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: deployments_mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: deployments
+      MYSQL_USER: dashboard
+      MYSQL_PASSWORD: dashboardpass
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uroot", "-prootpass"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks:
+      - shared_net
+
+networks:
+  shared_net:
+    external: true      

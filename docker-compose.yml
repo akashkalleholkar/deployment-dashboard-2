@@ -1,0 +1,23 @@
+
+version: "3.9"
+services:
+  deployment_dashboard_app:
+    build: .
+    container_name: deployment_dashboard_app
+    restart: always
+    environment:
+      # Update these to match your DB credentials & service name
+      DATABASE_URL: mysql+pymysql://dashboard:dashboardpass@deployments_mysql:3306/deployments
+      FLASK_ENV: production
+      PORT: 90
+    ports:
+      - "90:90"
+    volumes:
+      - .:/code
+    command: ["python", "-m", "app.server"]
+    networks:
+      - shared_net
+
+networks:
+  shared_net:
+    external: true
