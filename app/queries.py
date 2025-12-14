@@ -95,3 +95,30 @@ def deployments_current_year(project_id: int, environment_id: int):
             "environment_id": environment_id
         }).scalar() or 0
 
+def deployments_current_week_all():
+    sql = text("""
+        SELECT COUNT(*)
+        FROM deployments
+        WHERE YEARWEEK(deployed_at, 3) = YEARWEEK(CURDATE(), 3)
+    """)
+    with SessionLocal() as s:
+        return s.execute(sql).scalar() or 0
+
+def deployments_current_month_all():
+    sql = text("""
+        SELECT COUNT(*)
+        FROM deployments
+        WHERE YEAR(deployed_at) = YEAR(CURDATE())
+          AND MONTH(deployed_at) = MONTH(CURDATE())
+    """)
+    with SessionLocal() as s:
+        return s.execute(sql).scalar() or 0
+
+def deployments_current_year_all():
+    sql = text("""
+        SELECT COUNT(*)
+        FROM deployments
+        WHERE YEAR(deployed_at) = YEAR(CURDATE())
+    """)
+    with SessionLocal() as s:
+        return s.execute(sql).scalar() or 0

@@ -4,9 +4,9 @@ from app.config import Config
 from app.db import wait_for_db
 from app.queries import (
     list_projects, list_environments,
-    deployments_by_day, deployments_by_week, deployments_by_month, deployments_current_week,
-    deployments_current_month,
-    deployments_current_year
+    deployments_by_day, deployments_by_week, deployments_by_month, deployments_current_week_all,
+    deployments_current_month_all,
+    deployments_current_year_all,
 )
 
 def create_server() -> Flask:
@@ -24,6 +24,10 @@ def index():
     projects = list_projects()
     environments = list_environments()
 
+    week_total  = deployments_current_week_all()
+    month_total = deployments_current_month_all()
+    year_total  = deployments_current_year_all()
+
     selected_project_id = request.args.get("project_id", default=str(projects[0]["id"]) if projects else None)
     selected_env_id = request.args.get("environment_id", default=str(environments[0]["id"]) if environments else None)
 
@@ -39,9 +43,9 @@ def index():
         day_rows   = deployments_by_day(selected_project_id, selected_env_id, days=30)
         week_rows  = deployments_by_week(selected_project_id, selected_env_id, weeks=12)
         month_rows = deployments_by_month(selected_project_id, selected_env_id, months=12)
-        week_total  = deployments_current_week(selected_project_id, selected_env_id)
-        month_total = deployments_current_month(selected_project_id, selected_env_id)
-        year_total  = deployments_current_year(selected_project_id, selected_env_id)
+        week_total  = deployments_current_week_all()
+        month_total = deployments_current_month_all()
+        year_total  = deployments_current_year_all()
 
     return render_template(
         "index.html",
