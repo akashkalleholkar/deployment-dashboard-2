@@ -17,43 +17,67 @@
   <!-- Filters -->
   <section class="filters">
     <form method="get" id="filterForm">
+
+      <!-- Project Dropdown -->
       <label for="project">Project:</label>
-      <select name="project_id" id="project" onchange="document.getElementById('filterForm').submit();">
+      <select name="project_id" id="project"
+              onchange="document.getElementById('filterForm').submit();">
+
+        <!-- ALL PROJECTS -->
+        <option value="all"
+          {% if selected_project_id is none %}selected{% endif %}>
+          All Projects
+        </option>
+
         {% for p in projects %}
-          <option value="{{ p.id }}" {% if p.id == selected_project_id %}selected{% endif %}>{{ p.name }}</option>
+          <option value="{{ p.id }}"
+            {% if p.id == selected_project_id %}selected{% endif %}>
+            {{ p.name }}
+          </option>
         {% endfor %}
       </select>
 
-      <!-- Environment Tabs implemented as radio buttons -->
+      <!-- Environment Tabs -->
       <div class="env-tabs">
+
+        <!-- ALL ENVIRONMENTS -->
+        <label class="tab">
+          <input type="radio" name="environment_id" value="all"
+                 {% if selected_env_id is none %}checked{% endif %}
+                 onchange="document.getElementById('filterForm').submit();">
+          <span>ALL</span>
+        </label>
+
         {% for e in environments %}
           <label class="tab">
-            <input type="radio" name="environment_id" value="{{ e.id }}" {% if e.id == selected_env_id %}checked{% endif %}
+            <input type="radio" name="environment_id" value="{{ e.id }}"
+                   {% if e.id == selected_env_id %}checked{% endif %}
                    onchange="document.getElementById('filterForm').submit();">
             <span>{{ e.name|upper }}</span>
           </label>
         {% endfor %}
       </div>
+
     </form>
   </section>
 
-<div class="stats-container">
-  <div class="stat-card">
-    <h3>This Week</h3>
-    <p class="stat-value">{{ week_total }}</p>
-  </div>
+  <!-- Stats -->
+  <div class="stats-container">
+    <div class="stat-card">
+      <h3>This Week</h3>
+      <p class="stat-value">{{ week_total }}</p>
+    </div>
 
-  <div class="stat-card">
-    <h3>This Month</h3>
-    <p class="stat-value">{{ month_total }}</p>
-  </div>
+    <div class="stat-card">
+      <h3>This Month</h3>
+      <p class="stat-value">{{ month_total }}</p>
+    </div>
 
-  <div class="stat-card">
-    <h3>This Year</h3>
-    <p class="stat-value">{{ year_total }}</p>
+    <div class="stat-card">
+      <h3>This Year</h3>
+      <p class="stat-value">{{ year_total }}</p>
+    </div>
   </div>
-</div>
-
 
   <!-- Day-wise Table -->
   <section>
@@ -124,8 +148,9 @@
 </main>
 
 <footer>
-  <small>&copy; {{ (caller or None) and "" }} Deployment Dashboard</small>
+  <small>&copy; Deployment Dashboard</small>
 </footer>
 
 </body>
 </html>
+
